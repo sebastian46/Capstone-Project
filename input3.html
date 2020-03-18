@@ -1,0 +1,141 @@
+<!-- For individual graphs (Inputs 1-12) -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Input</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="https://unpkg.com/jeezy@1.12.0/lib/jeezy.min.js"></script>
+	<script src="https://unpkg.com/d3-marcon@2.0.2/build/d3-marcon.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+	<script src="http://code.jquery.com/jquery-3.3.1.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600" rel="stylesheet">
+	<link href="css/individual.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<nav>
+		<div>
+			<img id="biglogo" src="iis.png">
+			<i class="fa fa-bars"></i>
+		</div>
+		<ul>
+			<img id="smalllogo" src="logo_.png">
+			<li><a href="index.html">Home</a></li>
+			<li><a href="#">Inputs <i class="fa fa-sort-desc"></i></a>
+				<ul>
+					<li><a href="input1.html" id="input1"></a></li>
+					<li><a href="input2.html" id="input2"></a></li>
+					<li><a href="input3.html" id="input3"></a></li>
+					<li><a href="input4.html" id="input4"></a></li>
+					<li><a href="input5.html" id="input5"></a></li>
+					<li><a href="input6.html" id="input6"></a></li>
+					<li><a href="input7.html" id="input7"></a></li>
+					<li><a href="input8.html" id="input8"></a></li>
+					<li><a href="input9.html" id="input9"></a></li>
+					<li><a href="input10.html" id="input10"></a></li>
+					<li><a href="input11.html" id="input11"></a></li>
+					<li><a href="input12.html" id="input12"></a></li>
+				</ul>
+			</li>
+			<li><a href="settings.html">Settings</a></li>
+		</ul>
+	</nav>
+
+	<script type="text/javascript">
+
+		$("nav div").click(function() {
+			$("ul").slideToggle();
+			$("ul ul").css("display", "none");
+		});
+
+		$("ul li").click(function() {
+			$("ul ul").toggle();
+			//$(this).find('ul').slideToggle();
+		});
+
+		$(window).resize(function() {
+			if($(window).width() > 768) {
+				$("ul").removeAttr('style');
+			}
+		});
+
+	</script>
+	<script>
+		/*var runScript = new XMLHttpRequest();
+		runScript.open("GET", "php/updateVal_test.php", true);
+		runScript.send();*/
+
+
+		var sensorNum = 3; // this is the first sensor's page
+	    var ajax = new XMLHttpRequest();
+	    ajax.open("GET", "php/getNames.php", true);
+	    ajax.send();
+	    var alpha_two = [];
+
+	    ajax.onreadystatechange = function() {
+	        if (this.readyState == 4 && this.status == 200) {
+	            //alert(this.responseText);
+	            var data = JSON.parse(this.responseText);
+	            for(var a = 0; a < data.length; a++){
+	            	var count = a+1;
+	            	document.getElementById('input'+count).innerHTML = data[a].name;
+	            	//alpha_two.push(data[a].name);
+	            }
+	            alpha_two.push(data[sensorNum-1].name);
+	            document.title = data[sensorNum-1].name;
+	        }
+	    };
+
+	    var ajax2 = new XMLHttpRequest();
+	    ajax2.open("GET", "php/getSettings.php", true);
+	    ajax2.send();
+	    var alpha_two = [];
+
+	    ajax2.onreadystatechange = function() {
+	        if (this.readyState == 4 && this.status == 200) {
+	            //alert(this.responseText);
+	            var data = JSON.parse(this.responseText);
+	            //for(var a = 0; a < data.length; a++){
+            	document.getElementById('alarm').innerHTML = data[sensorNum-1].alarm;
+            	document.getElementById('min').innerHTML = data[sensorNum-1].min;
+            	document.getElementById('max').innerHTML = data[sensorNum-1].max;
+            	document.getElementById('units1').innerHTML = data[sensorNum-1].units;
+            	document.getElementById('units2').innerHTML = data[sensorNum-1].units;
+            	document.getElementById('units3').innerHTML = data[sensorNum-1].units;
+            	document.getElementById('units4').innerHTML = data[sensorNum-1].units;
+	            //}
+	        }
+	    };
+	</script>
+	<script>
+			function loadScript(url)
+			{    
+				var head = document.getElementsByTagName('head')[0];
+				var script = document.createElement('script');
+				script.type = 'text/javascript';
+				script.src = url;
+				head.appendChild(script);
+			}
+			setTimeout(function() { loadScript('js/individual_bar.js'); }, 200);
+	</script>
+	<div>
+		<center>
+			<svg width="960" height="500" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet"></svg>
+			<script src="js/individual_line_v2.js"></script>
+		</center>
+	</div>
+	<p>
+		<b>Sensor Value: </b><span id="rnd"></span> <span id="units1"></span><br> 
+		<b>Current Alarm Value: </b><span id="alarm"></span> <span id="units2"></span><br>
+		<b>Current Min Value: </b><span id="min"></span> <span id="units3"></span><br>
+		<b>Current Max Value: </b><span id="max"></span> <span id="units4"></span><br>
+	</p>
+	
+</body>
+</html>
