@@ -1,0 +1,165 @@
+.leftside, .rightside {
+	height: 50vh;
+	width: 100%;
+}
+
+.rightside {
+	position: absolute;
+	margin: auto;
+	top:0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+@media screen and (min-width:768px){
+	.leftside, .rightside {
+		height: 100vh;
+	}
+}
+
+#chart {
+	width: 100%;
+	position: absolute;
+	left: 10px;
+	right: 10px;
+	top: 10px;
+	bottom: 10px;
+}
+
+#chart2 {
+	width: 70%;
+}
+
+p {
+	text-align: left;
+	padding-left: 10px;
+}
+
+.line1 {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1px;
+}
+.axis path, .axis line {
+    fill: none;
+    stroke: #555555;
+    shape-rendering: crispEdges;
+}
+
+/*
+
+
+*/
+
+html {
+	font-family: "Poppins";
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	background: #800000;
+	position: relative;
+}
+
+img {
+	display: block;
+	padding-right: 30px;
+	float: right;
+	height: auto;
+}
+
+ul li {
+	display: inline-block;
+}
+
+ul li a {
+	color: white;
+	text-decoration: none;
+	padding: 15px;
+	display: block;
+}
+
+ul li:hover {
+	background: #690000;
+}
+
+ul ul {
+	position: absolute;
+	min-width: 200px;
+	background: lightgrey;
+	display: none;
+}
+
+ul ul li {
+	display: block;
+	background: #800000;
+}
+
+ul li:hover ul {
+	display: block;
+}
+
+ul li i {
+	color: white;
+	float: right;
+	padding-left: 20px;
+}
+
+nav div {
+	background: #800000;
+	color: white;
+	font-size: 24px;
+	padding: 0.6em;
+	cursor: pointer;
+	display: none;
+}
+
+@media(max-width: 768px) {
+	nav div {
+		display: block;
+	}
+
+	#smalllogo {
+		display: none;
+	}
+
+	img {
+		display: inline-block;
+		padding: 10px 0 0 30px;
+		float: left;
+		width: 100%;
+		height: auto;
+	}
+
+	ul {
+		display: none;
+		position: static;
+		background: #800000;
+	}
+
+	ul li {
+		display: block;
+	}
+
+	ul ul {
+		position: static;
+		background: #800000;
+	}
+}
+
+h1 {
+	font-size: 20px;
+}
+
+h1:before {
+	content:"• ";
+}
+
