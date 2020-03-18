@@ -1,4 +1,4 @@
-# Capstone-Project
+# Capstone Project (403)
 
 This project consists of 4 subsystems: power, GUI (physical), microcontroller, and web interface/database. The whole system took in sensor inputs, converted the readings into numerical values, and displayed them on the GUI (physical) and web interface. For the web interface to receive information, the microconroller had to send values to the database (at least once per second). 
 
