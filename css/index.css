@@ -1,55 +1,5 @@
-.leftside, .rightside {
-	height: 50vh;
-	width: 100%;
-}
-
-.rightside {
-	position: absolute;
-	margin: auto;
-	top:0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-}
-
-@media screen and (min-width:768px){
-	.leftside, .rightside {
-		height: 100vh;
-	}
-}
-
-#chart {
-	width: 100%;
-	position: absolute;
-	left: 10px;
-	right: 10px;
-	top: 10px;
-	bottom: 10px;
-}
-
-#chart2 {
-	width: 70%;
-}
-
-p {
-	text-align: left;
-	padding-left: 10px;
-}
-
-.line1 {
-    fill: none;
-    stroke: steelblue;
-    stroke-width: 1px;
-}
-.axis path, .axis line {
-    fill: none;
-    stroke: #555555;
-    shape-rendering: crispEdges;
-}
-
 /*
-
-
+	Sets page font
 */
 
 html {
@@ -60,6 +10,12 @@ body {
 	margin: 0;
 	padding: 0;
 }
+
+/*
+	The code from here to the next comment is for the menu bar.
+	This makes sure the dropdown menu is hidden until the user hovers over it
+	The media query towards the end makes the page responsive and mobile friendly
+*/
 
 ul {
 	margin: 0;
@@ -133,9 +89,13 @@ nav div {
 
 	img {
 		display: inline-block;
-		padding: 10px 0 0 30px;
-		float: left;
-		width: 100%;
+		/*padding: 10px 0 0 30px;*/
+		padding-top: 0px;
+		padding-right: 0;
+		padding-bottom: 0;
+		padding-left: 30px;
+		float: right;
+		width: 40%;
 		height: auto;
 	}
 
@@ -153,13 +113,35 @@ nav div {
 		position: static;
 		background: #800000;
 	}
+
+	svg {
+		margin: auto;
+		width: 100%;
+		height: auto;
+		position: relative;
+	  }
 }
 
-h1 {
-	font-size: 20px;
-}
+/*
+	This is only for settings.html.
+	Formats the settings form so the input fields align
+*/
+form { display: table; padding-left: 10px;     }
+p { display: table-row;  }
+label { display: table-cell; }
+input { display: table-cell; }
 
-h1:before {
-	content:"• ";
+/*
+	This makes the table in the home page
+*/
+table, th, td {
+	border: 1px solid black;
 }
-
+/*
+	center bar graph on desktop version
+*/
+svg {
+	display: block;
+	margin: auto;
+	position: relative;
+}

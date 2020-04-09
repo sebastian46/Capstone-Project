@@ -6,13 +6,14 @@
 		Takes in input from user, checks if any fields were blank (except id), and 
 		updates them with query.
 */
-// settings
+// settings sent by user
 $id=$_POST['t1'];
 $name=$_POST['t2'];
 $min=$_POST['t3'];
 $max=$_POST['t4'];
 $alarm=$_POST['t5'];
 $units=$_POST['t6'];
+$decimals=$_POST['t7'];
 
 
 // connect to database
@@ -40,8 +41,9 @@ while ($row = mysqli_fetch_object($query))
     $tmax=$row->max;
     $talarm=$row->alarm; 
     $tunits=$row->units;
+    $tdecimals=$row->decimal_places;
 }
-
+// if a field is left blank, keep old value
 if(empty($id))
 	$id=$tid;
 if(empty($name))
@@ -54,12 +56,12 @@ if(empty($alarm))
 	$alarm=$talarm;
 if(empty($units))
 	$units=$tunits;
-
+if(empty($decimals))
+	$decimals=$tdecimals;
 // update settings
 mysqli_query($con, "UPDATE inputsettings 
-					SET id='$id', name='$name', min='$min', max='$max', alarm='$alarm', units='$units'
+					SET id='$id', name='$name', min='$min', max='$max', alarm='$alarm', units='$units', decimal_places='$decimals'
 					WHERE id='$id'");
 
-header("Location: ../settings.html");
-
+echo "Settings Updated";
 ?>

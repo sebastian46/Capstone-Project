@@ -1,8 +1,10 @@
-<!-- For settings page -->
+<!-- 
+	For settings page. Settings are updated once the user presses Submit, assuming no error cases occur (such as no ID or min > max)
+-->
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 	<title>Settings</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
@@ -19,6 +21,7 @@
 	<link href="css/index.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+	<!-- load heading of page -->
 	<nav>
 		<div>
 			<img id="biglogo" src="iis.png">
@@ -46,7 +49,7 @@
 			<li><a href="settings.html">Settings</a></li>
 		</ul>
 	</nav>
-
+	<!-- JQuery for menu -->
 	<script type="text/javascript">
 
 		$("nav div").click(function() {
@@ -56,7 +59,6 @@
 
 		$("ul li").click(function() {
 			$("ul ul").toggle();
-			//$(this).find('ul').slideToggle();
 		});
 
 		$(window).resize(function() {
@@ -66,64 +68,109 @@
 		});
 
 	</script>
+	<!-- This is to get the names of the sensors-->
 	<script>
+		// opens getNames.php and runs query to return all sensor's names
 	    var ajax = new XMLHttpRequest();
 	    ajax.open("GET", "php/getNames.php", true);
 	    ajax.send();
-	    var alpha_two = [];
-
+	    // We receive the data in JSON format. This is to parse the information 
 	    ajax.onreadystatechange = function() {
+	    	// if no error
 	        if (this.readyState == 4 && this.status == 200) {
-	            //alert(this.responseText);
 	            var data = JSON.parse(this.responseText);
 	            for(var a = 0; a < data.length; a++){
 	            	var count = a+1;
+	            	// ID inputx (where x is 1-12) gets sent to header HTML
 	            	document.getElementById('input'+count).innerHTML = data[a].name;
-	            	alpha_two.push(data[a].name);
 	            }
-
 	        }
 	    };
 	</script>
-	<h1>
-		ID: This is a <b>required</b> field. It corresponds to a sensor. For example, sensor 1 (the first sensor under the input list) would have an ID of 1. The last sensor would have an ID of 12.
-	</h1>
-	<h1>
-		Name, min, max, alarm, units: These are not required. You can change one setting without changing any of the other fields. Any changes will immediately be reflected on the website.
-	</h1>
-	<br><br>
-	<center>
-		<form action="php/userInput.php" method="POST">
-		    <table>
-		        <tr>
-		        	<td>Enter ID</td>
-		            <td><input type="number" min="1" max="12" name="t1" required></td>
-		        </tr>
-		        <tr>
-		            <td>Enter name</td>
-		            <td><input type="text" name="t2"></td>
-		        </tr>
-		        <tr>
-		            <td>Enter min</td>
-		            <td><input type="number" step="any" min="-9999999999.9999999999" max="9999999999.9999999999" name="t3"></td>
-		        </tr>
-		        <tr>
-		            <td>Enter max</td>
-		            <td><input type="number" step="any" min="-9999999999.9999999999" max="9999999999.9999999999" name="t4"></td>
-		        </tr>
-		        <tr>
-		            <td>Enter alarm</td>
-		            <td><input type="number" step="any" min="-9999999999.9999999999" max="9999999999.9999999999" name="t5"></td>
-		        </tr>
-		        <tr>
-		            <td>Enter units</td>
-		            <td><input type="text" name="t6"></td>
-		        </tr>
-		        <tr>
-		            <td><button>Save Changes</button></td>
-		        </tr>	
-		    </table>
+	<!-- Settings form -->
+	<p>
+		• ID: This is a <b>required</b> field. It corresponds to a sensor. For example, sensor 1 (the first sensor under the input list) would have an ID of 1. The last sensor would have an ID of 12.
+	</p>
+	<br>
+	<p>
+		• Name, min, max, alarm, units, decimal places: These are not required. You can change one setting without changing any of the other fields. Any changes will immediately be reflected on the website.
+	</p>
+	<br>
+		<form>
+			<p>
+			    <label>Enter ID</label>
+				<input type="number" min="1" max="12" name="t1" id="t1">
+			</p>
+			<p>
+				<label>Enter name</label>
+			    <input type="text" name="t2" id="t2">
+			</p>
+			<p>
+		        <label>Enter min</label>
+		        <input type="number" step="any" min="-9999999999.9999999999" max="9999999999.9999999999" name="t3" id="t3">
+		    </p>
+		    <p>
+		        <label>Enter max</label>
+		        <input type="number" step="any" min="-9999999999.9999999999" max="9999999999.9999999999" name="t4" id="t4">
+	    	</p>
+	    	<p>
+		        <label>Enter alarm</label>
+		        <input type="number" step="any" min="-9999999999.9999999999" max="9999999999.9999999999" name="t5" id="t5">
+	        </p>
+	        <p>
+		        <label>Enter units</label>
+		        <input type="text" name="t6" id="t6">
+	        </p>
+	        <p>
+		        <label>Enter decimal places</label>
+		        <input input type="number" min="1" max="10" name="t7" id="t7">
+	        </p>
+	        <label></label>
+		    <input type="button" name="submit" id="submit" value="Submit" >
+		    <span id="error_message" class="text-danger"></span>  
+	        <span id="success_message" class="text-success"></span> 
 		</form>
-	</center>
+	<!-- ajax request -->
+	<script>  
+		$(document).ready(function(){ 
+			// on form submit, store values given by user 
+			$('#submit').click(function(){  
+				var t1 = $('#t1').val(); 
+				var t2 = $('#t2').val(); 
+				var t3 = $('#t3').val(); 
+				var t4 = $('#t4').val(); 
+				var t5 = $('#t5').val(); 
+				var t6 = $('#t6').val();
+				var t7 = $('#t7').val();
+				// if ID is empty, display this
+				if(t1 == '')  
+				{  
+					$('#error_message').html(" ID must be specified");  
+				}  
+				// if min > max, display this
+				else if (t3 > t4) {
+					$('#error_message').html(" Min must be greater than max"); 
+				}
+				// else, send ajax request and display success message
+				else  
+				{  
+					$('#error_message').html('');  
+					$.ajax({  
+						url:"php/userInput.php",  
+						method:"POST",  
+						data:{t1:t1, t2:t2, t3:t3, t4:t4, t5:t5, t6:t6, t7:t7},  
+						success:function(data){  
+							$("form").trigger("reset");  
+							$('#success_message').fadeIn().html(data);  
+							setTimeout(function(){  
+								$('#success_message').fadeOut("Slow"); 
+								location.reload(); 
+							}, 750);  
+						}  
+					});  
+				}  
+			});  
+		});  
+	</script>  
 </body>
 </html>

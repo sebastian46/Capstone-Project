@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 	<title>Main Page</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
@@ -22,6 +22,7 @@
 	<link href="css/index.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+	<!-- load heading of page -->
 	<nav>
 		<div>
 			<img id="biglogo" src="iis.png">
@@ -49,7 +50,7 @@
 			<li><a href="settings.html">Settings</a></li>
 		</ul>
 	</nav>
-
+	<!-- JQuery for menu -->
 	<script type="text/javascript">
 
 		$("nav div").click(function() {
@@ -59,7 +60,6 @@
 
 		$("ul li").click(function() {
 			$("ul ul").toggle();
-			//$(this).find('ul').slideToggle();
 		});
 
 		$(window).resize(function() {
@@ -69,75 +69,134 @@
 		});
 
 	</script>
+	<!-- load input names and bar graph -->
 	<script>
-		/*
-		// this is for adding random values to the local database
-		var runScript = new XMLHttpRequest();
-		runScript.open("GET", "php/updateVal_test.php", true);
-		runScript.send();
-		*/
-
-		// get input names
+		// opens getNames.php and runs query to return all sensor's names
 	    var ajax = new XMLHttpRequest();
 	    ajax.open("GET", "php/getNames.php", true);
 	    ajax.send();
+	    // to store the input names
 	    var alpha_two = [];
-
+	    // We receive the data in JSON format. This is to parse the information 
 	    ajax.onreadystatechange = function() {
+	    	// if no error
 	        if (this.readyState == 4 && this.status == 200) {
-	            //alert(this.responseText);
 	            var data = JSON.parse(this.responseText);
 	            for(var a = 0; a < data.length; a++){
 	            	var count = a+1;
+	            	// ID inputx (where x is 1-12) gets sent to header HTML
+	            	// Here, there are 2 different input IDs because they cannot be reused throughout the file.
 	            	document.getElementById('input'+count).innerHTML = data[a].name;
 	            	document.getElementById("_input"+a).innerHTML = data[a].name;
-	            	//console.log(data[a].name)
+	            	// store input name in array for later use
 	            	alpha_two.push(data[a].name);
 	            }
 	        }
 	    };
+	    /*
+		    // load bar graph
+			function loadScript(url)
+			{    
+			    var head = document.getElementsByTagName('head')[0];
+			    var script = document.createElement('script');
+			    script.type = 'text/javascript';
+			    script.src = url;
+			    head.appendChild(script);
+			}
+			// wait 200 ms so sensor names can be fetched 
+			setTimeout(function() { loadScript('js/12_bars.js'); }, 200);
+		*/
 
-	    // load graph
-		function loadScript(url)
-		{    
-		    var head = document.getElementsByTagName('head')[0];
-		    var script = document.createElement('script');
-		    script.type = 'text/javascript';
-		    script.src = url;
-		    head.appendChild(script);
-		}
-		setTimeout(function() { loadScript('js/12_bars.js'); }, 200);
-
-		// get units
+		// get units and decimal_places, basically same as first ajax request sent
+		var storeDecimalPlaces = [];
 		var ajax2 = new XMLHttpRequest();
 	    ajax2.open("GET", "php/getSettings.php", true);
 	    ajax2.send();
-	    var alpha_two = [];
 
 	    ajax2.onreadystatechange = function() {
 	        if (this.readyState == 4 && this.status == 200) {
-	            //alert(this.responseText);
 	            var data = JSON.parse(this.responseText);
 	            for(var a = 0; a < data.length; a++){
 	            	document.getElementById('unit'+a).innerHTML = data[a].units;
+	            	storeDecimalPlaces.push(data[a].decimal_places);
 	            }
+	            // console.log(storeDecimalPlaces);
 	        }
 	    };
+
 	</script>
-	<p>
-		<b><span id="_input0"></span> Value: </b><span id="value0"></span> <span id="unit0"></span><br> 
-		<b><span id="_input1"></span> Value: </b><span id="value1"></span> <span id="unit1"></span><br> 
-		<b><span id="_input2"></span> Value: </b><span id="value2"></span> <span id="unit2"></span><br> 
-		<b><span id="_input3"></span> Value: </b><span id="value3"></span> <span id="unit3"></span><br> 
-		<b><span id="_input4"></span> Value: </b><span id="value4"></span> <span id="unit4"></span><br> 
-		<b><span id="_input5"></span> Value: </b><span id="value5"></span> <span id="unit5"></span><br> 
-		<b><span id="_input6"></span> Value: </b><span id="value6"></span> <span id="unit6"></span><br> 
-		<b><span id="_input7"></span> Value: </b><span id="value7"></span> <span id="unit7"></span><br> 
-		<b><span id="_input8"></span> Value: </b><span id="value8"></span> <span id="unit8"></span><br> 
-		<b><span id="_input9"></span> Value: </b><span id="value9"></span> <span id="unit9"></span><br> 
-		<b><span id="_input10"></span> Value: </b><span id="value10"></span> <span id="unit10"></span><br> 
-		<b><span id="_input11"></span> Value: </b><span id="value11"></span> <span id="unit11"></span><br> 
-	</p>
+	<!-- output values for each sensor in table format -->
+	<table align="center">
+		<tr>
+			<th>Input Name</th>
+			<th>Value</th>
+		</tr>
+		<tr>
+			<td><span id="_input0"></span></td>
+			<td><span id="value0"></span> <span id="unit0"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input1"></span></td>
+			<td><span id="value1"></span> <span id="unit1"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input2"></span></td>
+			<td><span id="value2"></span> <span id="unit2"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input3"></span></td>
+			<td><span id="value3"></span> <span id="unit3"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input4"></span></td>
+			<td><span id="value4"></span> <span id="unit4"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input5"></span></td>
+			<td><span id="value5"></span> <span id="unit5"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input6"></span></td>
+			<td><span id="value6"></span> <span id="unit6"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input7"></span></td>
+			<td><span id="value7"></span> <span id="unit7"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input8"></span></td>
+			<td><span id="value8"></span> <span id="unit8"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input9"></span></td>
+			<td><span id="value9"></span> <span id="unit9"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input10"></span></td>
+			<td><span id="value10"></span> <span id="unit10"></span></td>
+		</tr>
+		<tr>
+			<td><span id="_input11"></span></td>
+			<td><span id="value11"></span> <span id="unit11"></span></td>
+		</tr>
+	</table>
+	<br><br>
+	<svg width="1000" height="500" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet" id="svg1">
+		<script>
+			// diplays bar graph
+			function loadScript(url)
+				{    
+					var head = document.getElementsByTagName('head')[0];
+					var script = document.createElement('script');
+					script.type = 'text/javascript';
+					script.src = url;
+					head.appendChild(script);
+				}
+			// delayed by .2 seconds so page has enough time to load the sensor's name
+			setTimeout(function() { loadScript('js/12_bars.js'); }, 200);
+		</script>
+	</svg>
+
 </div>
 </body>
 </html>

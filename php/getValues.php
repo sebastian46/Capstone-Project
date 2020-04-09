@@ -7,6 +7,7 @@
 */
 header('Access-Control-Allow-Origin: *');
 
+// connect to database
 $host="localhost";
 $port=3306;
 $socket="";
@@ -17,9 +18,7 @@ $dbname="test";
 $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
-//$con->close();
-
-// display table
+// returns values for sensors in JSON format
 $query = mysqli_query($con, "SELECT value FROM storeval");
 
 $data = array();

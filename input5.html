@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 	<title>Input</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
@@ -19,6 +19,7 @@
 	<link href="css/individual.css" rel="stylesheet" type="text/css">
 </head>
 <body>
+	<!-- heading for page -->
 	<nav>
 		<div>
 			<img id="biglogo" src="iis.png">
@@ -46,7 +47,7 @@
 			<li><a href="settings.html">Settings</a></li>
 		</ul>
 	</nav>
-
+	<!-- JQuery for page -->
 	<script type="text/javascript">
 
 		$("nav div").click(function() {
@@ -66,76 +67,103 @@
 		});
 
 	</script>
+	<!-- Gets sensor name and settings -->
 	<script>
-		/*var runScript = new XMLHttpRequest();
-		runScript.open("GET", "php/updateVal_test.php", true);
-		runScript.send();*/
-
-
-		var sensorNum = 5; // this is the first sensor's page
+		// this is the only thing that changes for all input pages
+		// tells us which sensor's information we need
+		var sensorNum = 5; 
+		// get names of inputs for menu
 	    var ajax = new XMLHttpRequest();
 	    ajax.open("GET", "php/getNames.php", true);
 	    ajax.send();
 	    var alpha_two = [];
 
 	    ajax.onreadystatechange = function() {
+	    	// if no error
 	        if (this.readyState == 4 && this.status == 200) {
-	            //alert(this.responseText);
 	            var data = JSON.parse(this.responseText);
 	            for(var a = 0; a < data.length; a++){
 	            	var count = a+1;
 	            	document.getElementById('input'+count).innerHTML = data[a].name;
-	            	//alpha_two.push(data[a].name);
 	            }
+	            // store the sensor's name in array
 	            alpha_two.push(data[sensorNum-1].name);
+	            // change the title of the actual webpage to the sensor's name
 	            document.title = data[sensorNum-1].name;
 	        }
 	    };
 
+	    // get setting values for displaying information
+	    var storeDecimalPlace;
 	    var ajax2 = new XMLHttpRequest();
 	    ajax2.open("GET", "php/getSettings.php", true);
 	    ajax2.send();
-	    var alpha_two = [];
 
 	    ajax2.onreadystatechange = function() {
 	        if (this.readyState == 4 && this.status == 200) {
-	            //alert(this.responseText);
 	            var data = JSON.parse(this.responseText);
-	            //for(var a = 0; a < data.length; a++){
-            	document.getElementById('alarm').innerHTML = data[sensorNum-1].alarm;
-            	document.getElementById('min').innerHTML = data[sensorNum-1].min;
-            	document.getElementById('max').innerHTML = data[sensorNum-1].max;
+	            // stores decimal place for sensorNum
+            	storeDecimalPlace = data[sensorNum-1].decimal_places;
+	            // we need units1-4 because we cannot reuse the ID
+            	document.getElementById('alarm').innerHTML = Number(data[sensorNum-1].alarm).toFixed(storeDecimalPlace);
+            	document.getElementById('min').innerHTML = Number(data[sensorNum-1].min).toFixed(storeDecimalPlace);
+            	document.getElementById('max').innerHTML = Number(data[sensorNum-1].max).toFixed(storeDecimalPlace);
             	document.getElementById('units1').innerHTML = data[sensorNum-1].units;
             	document.getElementById('units2').innerHTML = data[sensorNum-1].units;
             	document.getElementById('units3').innerHTML = data[sensorNum-1].units;
             	document.getElementById('units4').innerHTML = data[sensorNum-1].units;
-	            //}
 	        }
 	    };
 	</script>
-	<script>
-			function loadScript(url)
-			{    
-				var head = document.getElementsByTagName('head')[0];
-				var script = document.createElement('script');
-				script.type = 'text/javascript';
-				script.src = url;
-				head.appendChild(script);
-			}
-			setTimeout(function() { loadScript('js/individual_bar.js'); }, 200);
-	</script>
+	<!-- Displays sensor information -->
+	<table id="t01" align="center">
+		<tr>
+			<td><b>Sensor Value: </b></td>
+			<td><span id="rnd"></span> <span id="units1"></span></td>
+		</tr>
+		<tr>
+			<td><b>Current Alarm Value: </b></td>
+			<td><span id="alarm"></span> <span id="units2"></span></td>
+		</tr>
+		<tr>
+			<td><b>Current Min Value: </b></td>
+			<td><span id="min"></span> <span id="units3"></span></td>
+		</tr>
+		<tr>
+			<td><b>Current Max Value: </b></td>
+			<td><span id="max"></span> <span id="units4"></span></td>
+		</tr>
+	</table>
+
 	<div>
 		<center>
+			<!-- displays line graph -->
 			<svg width="960" height="500" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet"></svg>
 			<script src="js/individual_line_v2.js"></script>
+			<b>Line Graph:</b> Displays values over the last 100 seconds<br>
+			<b>Bar Graph:</b> Displays current value
 		</center>
 	</div>
-	<p>
-		<b>Sensor Value: </b><span id="rnd"></span> <span id="units1"></span><br> 
-		<b>Current Alarm Value: </b><span id="alarm"></span> <span id="units2"></span><br>
-		<b>Current Min Value: </b><span id="min"></span> <span id="units3"></span><br>
-		<b>Current Max Value: </b><span id="max"></span> <span id="units4"></span><br>
-	</p>
-	
+
+	<div>
+		<!--<svg width="960" height="500" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet" id="svg1">-->
+		<svg width="1000" height="500" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet" id="svg1">
+			<script>
+				// diplays bar graph
+				function loadScript(url)
+					{    
+						var head = document.getElementsByTagName('head')[0];
+						var script = document.createElement('script');
+						script.type = 'text/javascript';
+						script.src = url;
+						head.appendChild(script);
+					}
+				// delayed by .2 seconds so page has enough time to load the sensor's name
+				setTimeout(function() { loadScript('js/individual_bar.js'); }, 200);
+			</script>
+		</svg>
+		
+		
+	</div>	
 </body>
 </html>

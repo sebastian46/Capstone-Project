@@ -1,3 +1,7 @@
+
+/*
+	Sets font for page
+*/
 html {
 	font-family: "Poppins";
 }
@@ -6,6 +10,12 @@ body {
 	margin: 0;
 	padding: 0;
 }
+
+/*
+	The code from here to the next comment is for the menu bar.
+	This makes sure the dropdown menu is hidden until the user hovers over it
+	The media query towards the end makes the page responsive and mobile friendly
+*/
 
 ul {
 	margin: 0;
@@ -79,9 +89,13 @@ nav div {
 
 	img {
 		display: inline-block;
-		padding: 10px 0 0 30px;
-		float: left;
-		width: 100%;
+		/*padding: 10px 0 0 30px;*/
+		padding-top: 0px;
+		padding-right: 0;
+		padding-bottom: 0;
+		padding-left: 30px;
+		float: right;
+		width: 40%;
 		height: auto;
 	}
 
@@ -101,20 +115,23 @@ nav div {
 	}
 
 	svg {
+		margin: auto;
 		width: 100%;
 		height: auto;
-	}
+		position: absolute;
+	  }
 }
 
 p {
 	text-align: center;
 }
 
-.line1 {
-    fill: none;
-    stroke: steelblue;
-    stroke-width: 1px;
-}
+/*
+	Center the line graph.
+	Draws the line and colors it.
+	Draws grids for the line graph
+*/
+
 .axis path, .axis line {
     fill: none;
     stroke: #555555;
@@ -123,13 +140,13 @@ p {
 
 .line {
   fill: none;
-  stroke: #000;
-  stroke-width: 1.5px;
+  stroke: maroon;
+  stroke-width: 2px;
 }
 
 .grid line {
-  stroke: lightgrey;
-  stroke-opacity: 0.7;
+  stroke: lightgray;
+  stroke-opacity: 0.4;
   shape-rendering: crispEdges;
 }
 
@@ -137,13 +154,11 @@ p {
   stroke-width: 0;
 }
 
+/*
+	Center line graph and bar graph on mobile version
+*/
 svg {
 	display: block;
 	margin: auto;
+	position: relative;
 }
-
-/*
-
-
-*/
-

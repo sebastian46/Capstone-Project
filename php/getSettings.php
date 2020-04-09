@@ -7,6 +7,7 @@
 */
 header('Access-Control-Allow-Origin: *');
 
+// connect to database
 $host="localhost";
 $port=3306;
 $socket="";
@@ -17,9 +18,8 @@ $dbname="test";
 $con = new mysqli($host, $user, $password, $dbname, $port, $socket)
 	or die ('Could not connect to the database server' . mysqli_connect_error());
 
-//$con->close();
-
-$query = mysqli_query($con, "SELECT min, max, alarm, units FROM inputsettings");
+// returns the settings for each sensor in JSON format
+$query = mysqli_query($con, "SELECT min, max, alarm, units, decimal_places FROM inputsettings");
 
 $data = array();
 while ($row = mysqli_fetch_object($query))
