@@ -11,9 +11,10 @@ $id=$_POST['t1'];
 $name=$_POST['t2'];
 $min=$_POST['t3'];
 $max=$_POST['t4'];
-$alarm=$_POST['t5'];
+$low_alarm=$_POST['t5'];
 $units=$_POST['t6'];
 $decimals=$_POST['t7'];
+$high_alarm=$_POST['t8'];
 
 
 // connect to database
@@ -39,9 +40,10 @@ while ($row = mysqli_fetch_object($query))
     $tname=$row->name; 
     $tmin=$row->min; 
     $tmax=$row->max;
-    $talarm=$row->alarm; 
+    $thighalarm=$row->High_Alarm;
     $tunits=$row->units;
     $tdecimals=$row->decimal_places;
+    $tlowalarm=$row->Low_Alarm; 
 }
 // if a field is left blank, keep old value
 if(empty($id))
@@ -52,15 +54,17 @@ if(empty($min))
 	$min=$tmin;
 if(empty($max))
 	$max=$tmax;
-if(empty($alarm))
-	$alarm=$talarm;
+if(empty($low_alarm))
+	$low_alarm=$tlowalarm;
 if(empty($units))
 	$units=$tunits;
 if(empty($decimals))
 	$decimals=$tdecimals;
+if(empty($high_alarm))
+	$high_alarm=$thighalarm;
 // update settings
 mysqli_query($con, "UPDATE inputsettings 
-					SET id='$id', name='$name', min='$min', max='$max', alarm='$alarm', units='$units', decimal_places='$decimals'
+					SET id='$id', name='$name', min='$min', max='$max', High_Alarm='$high_alarm', units='$units', decimal_places='$decimals', Low_Alarm='$low_alarm'
 					WHERE id='$id'");
 
 echo "Settings Updated";

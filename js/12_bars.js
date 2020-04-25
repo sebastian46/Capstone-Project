@@ -66,7 +66,7 @@ var x = d3
 var y = d3
   .scaleLinear()
   .range([height, 0])
-  .domain([0, 10]);
+  .domain([0, 100]);
 
 // following lines are for the scale of x/y axis
 var x_axis = d3.axisBottom(x).tickFormat(d => myTicks[d]); // allows same name inputs
@@ -204,7 +204,22 @@ function getData() {
     if (this.readyState == 4 && this.status == 200) {
       var data_ = JSON.parse(this.responseText);
       for (var a = 0; a < data_.length; a++) {
-        tempStore[a] = Number(data_[a].value);
+        // if the value read is less than the min sensor value
+        // make the percentage 0
+        if(Number(data_[a].value) < min_sensor_values[a]){
+          tempStore[a] = 0;
+        }
+        // if the value read is larger than the max sensor value
+        // make the percentage 100
+        else if(Number(data_[a].value) > max_sensor_values[a]){
+          tempStore[a] = 100;
+        }
+        // else, convert to percentage
+        else{
+          var val = Number(data_[a].value);
+          // input gets converted to percentage and stored
+          tempStore[a] = (val/max_sensor_values[a])*100;
+        }
       }
     }
   };

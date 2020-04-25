@@ -6,7 +6,7 @@ var n_2 = 101;
 var data_3 = [];
 for (var i = 0; i < 101; i++) {
   // populate with 0s
-  data_3[i] = 0;//(Math.random()*(10));
+  data_3[i] = min_sensor_values;//(Math.random()*(10));
 }
 // setup svg
 var svg_3 = d3.select("svg"),
@@ -29,7 +29,7 @@ var x_3 = d3
 // scale of the y-axis
 var y_3 = d3
   .scaleLinear()
-  .domain([0, 10])
+  .domain([min_sensor_values, max_sensor_values])
   .range([height_3, 0]);
 
 // to create the line's position when graphing
@@ -145,6 +145,30 @@ function getData_2() {
     if (this.readyState == 4 && this.status == 200) {
       var data_ = JSON.parse(this.responseText);
       tempStore[0] = Number(data_[sensorNum - 1].value);
+      /*if(tempStore[0] < low_alarm_value){
+        if(alert('Value read is lower than Low Alarm value!\nClick OK to reload page')){}
+        else    window.location.reload(); 
+      }
+      if(tempStore[0] > high_alarm_value){
+        if(alert('Value read is higher than High Alarm value!\nClick OK to reload page')){}
+        else    window.location.reload(); 
+      }*/
+      // if the value read is less than the min sensor value
+      // make the percentage 0
+      if(Number(data_[sensorNum - 1].value) < min_sensor_values){
+        tempStore[0] = Number(min_sensor_values);
+      }
+      // if the value read is larger than the max sensor value
+      // make the percentage 100
+      else if(Number(data_[sensorNum - 1].value) > max_sensor_values){
+        tempStore[0] = Number(max_sensor_values);
+      }
+      // else, convert to percentage
+      else{
+        var val = Number(data_[sensorNum - 1].value);
+        // input gets converted to percentage and stored
+        tempStore[0] = val;
+      }
     }
   };
   // we return the resolved promise

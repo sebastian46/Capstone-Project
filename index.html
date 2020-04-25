@@ -71,6 +71,10 @@
 	</script>
 	<!-- load input names and bar graph -->
 	<script>
+		// this is for adding random values to the local database
+		var runScript = new XMLHttpRequest();
+		runScript.open("GET", "php/updateVal_test.php", true);
+		runScript.send();
 		// opens getNames.php and runs query to return all sensor's names
 	    var ajax = new XMLHttpRequest();
 	    ajax.open("GET", "php/getNames.php", true);
@@ -93,6 +97,8 @@
 	            }
 	        }
 	    };
+
+
 	    /*
 		    // load bar graph
 			function loadScript(url)
@@ -107,6 +113,9 @@
 			setTimeout(function() { loadScript('js/12_bars.js'); }, 200);
 		*/
 
+		// to store the min and max values
+	    var min_sensor_values = [];
+	    var max_sensor_values = [];
 		// get units and decimal_places, basically same as first ajax request sent
 		var storeDecimalPlaces = [];
 		var ajax2 = new XMLHttpRequest();
@@ -118,6 +127,8 @@
 	            var data = JSON.parse(this.responseText);
 	            for(var a = 0; a < data.length; a++){
 	            	document.getElementById('unit'+a).innerHTML = data[a].units;
+	            	min_sensor_values[a] = data[a].min;
+	            	max_sensor_values[a] = data[a].max;
 	            	storeDecimalPlaces.push(data[a].decimal_places);
 	            }
 	            // console.log(storeDecimalPlaces);

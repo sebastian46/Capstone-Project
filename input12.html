@@ -69,6 +69,10 @@
 	</script>
 	<!-- Gets sensor name and settings -->
 	<script>
+		// this is for adding random values to the local database
+		var runScript = new XMLHttpRequest();
+		runScript.open("GET", "php/updateVal_test.php", true);
+		runScript.send();
 		// this is the only thing that changes for all input pages
 		// tells us which sensor's information we need
 		var sensorNum = 12; 
@@ -93,6 +97,10 @@
 	        }
 	    };
 
+
+	    // to store the min and max values
+	    var min_sensor_values;
+	    var max_sensor_values;
 	    // get setting values for displaying information
 	    var storeDecimalPlace;
 	    var ajax2 = new XMLHttpRequest();
@@ -105,13 +113,19 @@
 	            // stores decimal place for sensorNum
             	storeDecimalPlace = data[sensorNum-1].decimal_places;
 	            // we need units1-4 because we cannot reuse the ID
-            	document.getElementById('alarm').innerHTML = Number(data[sensorNum-1].alarm).toFixed(storeDecimalPlace);
+            	document.getElementById('low alarm').innerHTML = Number(data[sensorNum-1].Low_Alarm).toFixed(storeDecimalPlace);
+            	document.getElementById('high alarm').innerHTML = Number(data[sensorNum-1].High_Alarm).toFixed(storeDecimalPlace);
             	document.getElementById('min').innerHTML = Number(data[sensorNum-1].min).toFixed(storeDecimalPlace);
             	document.getElementById('max').innerHTML = Number(data[sensorNum-1].max).toFixed(storeDecimalPlace);
             	document.getElementById('units1').innerHTML = data[sensorNum-1].units;
             	document.getElementById('units2').innerHTML = data[sensorNum-1].units;
             	document.getElementById('units3').innerHTML = data[sensorNum-1].units;
             	document.getElementById('units4').innerHTML = data[sensorNum-1].units;
+            	document.getElementById('units5').innerHTML = data[sensorNum-1].units;
+            	min_sensor_values = data[sensorNum-1].min;
+	            max_sensor_values = data[sensorNum-1].max;
+	            low_alarm_value = data[sensorNum-1].Low_Alarm;
+	            high_alarm_value = data[sensorNum-1].High_Alarm;
 	        }
 	    };
 	</script>
@@ -122,8 +136,12 @@
 			<td><span id="rnd"></span> <span id="units1"></span></td>
 		</tr>
 		<tr>
-			<td><b>Current Alarm Value: </b></td>
-			<td><span id="alarm"></span> <span id="units2"></span></td>
+			<td><b>Current Low Alarm Value: </b></td>
+			<td><span id="low alarm"></span> <span id="units2"></span></td>
+		</tr>
+		<tr>
+			<td><b>Current High Alarm Value: </b></td>
+			<td><span id="high alarm"></span> <span id="units5"></span></td>
 		</tr>
 		<tr>
 			<td><b>Current Min Value: </b></td>
@@ -139,7 +157,20 @@
 		<center>
 			<!-- displays line graph -->
 			<svg width="960" height="500" viewBox="0 0 960 500" preserveAspectRatio="xMidYMid meet"></svg>
-			<script src="js/individual_line_v2.js"></script>
+			<script>
+				// diplays bar graph
+				function loadScript(url)
+					{    
+						var head = document.getElementsByTagName('head')[0];
+						var script = document.createElement('script');
+						script.type = 'text/javascript';
+						script.src = url;
+						head.appendChild(script);
+					}
+				// delayed by .2 seconds so page has enough time to load the sensor's name
+				setTimeout(function() { loadScript('js/individual_line_v2.js'); }, 200);
+			</script>
+			<!--<script src="js/individual_line_v2.js"></script>-->
 			<b>Line Graph:</b> Displays values over the last 100 seconds<br>
 			<b>Bar Graph:</b> Displays current value
 		</center>

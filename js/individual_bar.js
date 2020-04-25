@@ -54,7 +54,7 @@ var x = d3
 var y = d3
   .scaleLinear()
   .range([height, 0])
-  .domain([0, 10]);
+  .domain([min_sensor_values, max_sensor_values]);
 
 // following lines are for the scale of x/y axis
 var x_axis = d3.axisBottom(x);
@@ -124,6 +124,7 @@ function redraw(data) {
       return y(d[y_var]);
     })
     .attr("height", function(d) {
+      //console.log(y(d[y_var]));
       return height - y(d[y_var]);
     });
 
@@ -183,6 +184,36 @@ function getData() {
     if (this.readyState == 4 && this.status == 200) {
       var data_ = JSON.parse(this.responseText);
       tempStore[0] = Number(data_[sensorNum - 1].value);
+      // checks if value is between the low and high alarm
+      // displays alert if not
+      if(tempStore[0] < low_alarm_value){
+        setTimeout(function(){
+          if(alert('Value read is lower than Low Alarm value!\nClick OK to reload page')){}
+          else    window.location.reload(); 
+        }, 1500);
+      }
+      if(tempStore[0] > high_alarm_value){
+        setTimeout(function(){
+          if(alert('Value read is higher than High Alarm value!\nClick OK to reload page')){}
+          else    window.location.reload(); 
+        }, 1500);
+      }
+      // if the value read is less than the min sensor value
+      // make the percentage 0
+      if(Number(data_[sensorNum - 1].value) < min_sensor_values){
+        tempStore[0] = Number(min_sensor_values);
+      }
+      // if the value read is larger than the max sensor value
+      // make the percentage 100
+      else if(Number(data_[sensorNum - 1].value) > max_sensor_values){
+        tempStore[0] = Number(max_sensor_values);
+      }
+      // else, convert to percentage
+      else{
+        var val = Number(data_[sensorNum - 1].value);
+        // input gets converted to percentage and stored
+        tempStore[0] = val;
+      }
     }
   };
   // we return the resolved promise

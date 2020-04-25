@@ -93,7 +93,11 @@
 	</p>
 	<br>
 	<p>
-		• Name, min, max, alarm, units, decimal places: These are not required. You can change one setting without changing any of the other fields. Any changes will immediately be reflected on the website.
+		• Name, min, max, low alarm, high alarm, units, decimal places: These are not required. You can change one setting without changing any of the other fields. Any changes will immediately be reflected on the website.
+	</p>
+	<br>
+	<p>
+		• *ERROR message goes away after 3s* An error message will be displayed if the input given conflicts with previous (or new) inputs. Ex: min cannot be greater than max.
 	</p>
 	<br>
 		<form>
@@ -114,8 +118,12 @@
 		        <input type="number" step="any" min="-9999999999.9999999999" max="9999999999.9999999999" name="t4" id="t4">
 	    	</p>
 	    	<p>
-		        <label>Enter alarm</label>
+		        <label>Enter low alarm</label>
 		        <input type="number" step="any" min="-9999999999.9999999999" max="9999999999.9999999999" name="t5" id="t5">
+	        </p>
+	        <p>
+		        <label>Enter high alarm</label>
+		        <input type="number" step="any" min="-9999999999.9999999999" max="9999999999.9999999999" name="t8" id="t8">
 	        </p>
 	        <p>
 		        <label>Enter units</label>
@@ -133,32 +141,158 @@
 	<!-- ajax request -->
 	<script>  
 		$(document).ready(function(){ 
+			// for refreshing the page on error message
+			function resetPage() {
+				//$("form").trigger("reset");  
+				setTimeout(function(){  
+					location.reload(); 
+				}, 3000); 
+			}
 			// on form submit, store values given by user 
 			$('#submit').click(function(){  
-				var t1 = $('#t1').val(); 
-				var t2 = $('#t2').val(); 
-				var t3 = $('#t3').val(); 
-				var t4 = $('#t4').val(); 
-				var t5 = $('#t5').val(); 
-				var t6 = $('#t6').val();
-				var t7 = $('#t7').val();
+				var t1 = $('#t1').val(); // ID
+				var t2 = $('#t2').val(); // name 
+				var t3 = $('#t3').val(); // min
+				var t4 = $('#t4').val(); // max
+				var t5 = $('#t5').val(); // low alarm
+				var t6 = $('#t6').val(); // units
+				var t7 = $('#t7').val(); // decimal places
+				var t8 = $('#t8').val(); // high alarm
 				// if ID is empty, display this
 				if(t1 == '')  
 				{  
-					$('#error_message').html(" ID must be specified");  
-				}  
+					$('#error_message').html(" ID must be specified"); 
+					resetPage();
+				} 
+				// get current settings for comparison
+				var data_test;
+				$.ajax({  
+					'async': false,
+					'global': false,
+					'url':"php/getSettings.php",  
+					'method':"GET",  
+					'data': data_test,  
+					success:function(data){  
+						data_test = data;
+					},
+					'dataType': "json"
+				}); 
+				// store settings for later comparison
+				var sensor_min = data_test[t1-1].min;
+				var sensor_max = data_test[t1-1].max;
+				var sensor_low_alarm = data_test[t1-1].Low_Alarm;
+				var sensor_high_alarm = data_test[t1-1].High_Alarm;
+				
 				// if min > max, display this
-				else if (t3 > t4) {
-					$('#error_message').html(" Min must be greater than max"); 
+				// check if min is empty
+				if (t3) {
+					// if max is not empty
+					if(t4){
+						if(Number(t3) > Number(t4)){
+							$('#error_message').html(" Min must be greater than max"); 
+							resetPage();
+						}
+					}
+					// if max is empty
+					else{
+						if(Number(t3) > Number(sensor_max)){
+							$('#error_message').html(" Min must be greater than max"); 
+							resetPage();
+						}
+					}
 				}
-				// else, send ajax request and display success message
-				else  
-				{  
+				// if low alarm is not empty
+				if (t5){
+					// if min is not empty
+					if(t3){
+						if(Number(t5) <= Number(t3)){
+							$('#error_message').html(" Low alarm must be greater than min"); 
+							resetPage();
+						}
+					// if min is empty
+					}else{
+						if(Number(t5) <= Number(sensor_min)){
+							$('#error_message').html(" Low alarm must be greater than min"); 
+							resetPage();
+						}
+					}
+					// if max is not empty
+					if(t4){
+						if(Number(t5) >= Number(t4)){
+							$('#error_message').html(" Low alarm must be less than max");
+							resetPage(); 
+						}
+					// if max is empty
+					}else{
+						if(Number(t5) >= Number(sensor_max)){
+							$('#error_message').html(" Low alarm must be less than max"); 
+							resetPage();
+						}
+					}
+					// if high alarm is not empty
+					if(t8){
+						if(Number(t5) >= Number(t8)){
+							$('#error_message').html(" Low alarm must be less than high alarm");
+							resetPage(); 
+						}
+					// if high alarm is empty
+					}else{
+						if(Number(t5) >= Number(sensor_high_alarm)){
+							$('#error_message').html(" Low alarm must be less than high alarm"); 
+							resetPage();
+						}
+					}
+				}
+				// high alarm must be LEQ to max
+				// if high alarm is not empty
+				if (t8){
+					// if min is not empty
+					if(t3){
+						if(Number(t8) <= Number(t3)){
+							$('#error_message').html(" High alarm must be greater than min"); 
+							resetPage();
+						}
+					// if min is empty
+					}else{
+						if(Number(t8) <= Number(sensor_min)){
+							$('#error_message').html(" High alarm must be greater than min"); 
+							resetPage();
+						}
+					}
+					// if max is not empty
+					if(t4){
+						if(Number(t8) >= Number(t4)){
+							$('#error_message').html(" High alarm must be less than max"); 
+							resetPage();
+						}
+					// if max is empty
+					}else{
+						if(Number(t8) >= Number(sensor_max)){
+							$('#error_message').html(" High alarm must be less than max"); 
+							resetPage();
+						}
+					}
+					// if low alarm is not empty
+					if(t5){
+						if(Number(t5) >= Number(t8)){
+							$('#error_message').html(" Low alarm must be less than high alarm"); 
+							resetPage();
+						}
+					// if high alarm is empty
+					}else{
+						if(Number(t8) >= Number(sensor_high_alarm)){
+							$('#error_message').html(" Low alarm must be less than high alarm"); 
+							resetPage();
+						}
+					}
+				}
+				// send ajax request and display success message if there are not error messages
+				if($('#error_message').is(':empty')){
 					$('#error_message').html('');  
 					$.ajax({  
 						url:"php/userInput.php",  
 						method:"POST",  
-						data:{t1:t1, t2:t2, t3:t3, t4:t4, t5:t5, t6:t6, t7:t7},  
+						data:{t1:t1, t2:t2, t3:t3, t4:t4, t5:t5, t6:t6, t7:t7, t8:t8},  
 						success:function(data){  
 							$("form").trigger("reset");  
 							$('#success_message').fadeIn().html(data);  
@@ -168,7 +302,7 @@
 							}, 750);  
 						}  
 					});  
-				}  
+				}
 			});  
 		});  
 	</script>  
